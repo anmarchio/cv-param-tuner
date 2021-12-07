@@ -2,10 +2,11 @@
 #include "pch.h"
 #include <math.h> 
 #include <cstdlib>
+#include <iostream>
 
-int applyCVPipeline(int bestValue);
-int getCost(int state);
-int getNeighbors(int state);
+void applyCVPipeline(double* bestValue, double* result);
+double getCost(double* state);
+double getNeighbors(double state);
 void simulatedAnnealing(
 	int param1,
 	int param2,

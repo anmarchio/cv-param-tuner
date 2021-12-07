@@ -1,22 +1,24 @@
 #include "pch.h"
 #include "Heuristics.h"
 
-double applyCVPipeline(double bestValue)
+void applyCVPipeline(double* bestValue, double* result)
 {
 	// Polynomial test function
 	//  f(x)= 3x^2 + x + 1 
-	double result = 3 * pow(bestValue, 2) +
-		bestValue +
+	*result = 3 * pow(*bestValue, 2) +
+		*bestValue +
 		1;
-	return result;
+	//return result;
 }
 
-double getCost(double state)
+double getCost(double* state)
 {
 	// Calculates cost of 
 	// the argument state 
 	// for your solution.
-	return applyCVPipeline(state);
+	double result = 0.0;
+	applyCVPipeline(state, &result);
+	return result;
 }
 
 double getNeighbors(double state)
@@ -54,30 +56,34 @@ void simulatedAnnealing(
 
 	// Current Initial State
 	double currentState = (double) (rand() % 100);
-	solution = getCost(currentState);
+	double init = 0.0;
+	solution = &init;
+	*solution = getCost(&currentState);
 
 	while(currentTemp > finalTemp)
 	{
 		// Get Neighbour of the current state
-		double neighbor = getNeighbors(currentState);
+		double neighbor = getNeighbors(currentState);		
 
 		// Calculate difference between neighbor and current state
-		double costDifference = getCost(currentState) - getCost(neighbor);
+		double costDifference = getCost(&currentState) - getCost(&neighbor);
 				
 		// If solution is better, accept it
 		if (costDifference > 0)
 		{
-			solution = getCost(neighbor);
+			*solution = getCost(&neighbor);
 		} 
 		else 
 		{
 			// if the new solution is not better, accept it with a prop of e^(-cost/temp)
 			if((double) rand() < exp(costDifference / currentTemp))
 			{
-				solution = getCost(neighbor);
+				*solution = getCost(&neighbor);
 			}
 		}
 		// Decrement the temperature
 		currentTemp -= alpha;
+
+		std::cout << currentTemp << "\n";
 	}
 }
