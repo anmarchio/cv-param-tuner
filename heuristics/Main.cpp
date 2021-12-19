@@ -16,6 +16,6 @@ int main()
 		30,
 		&solution);
 
-	cout << "Solution: " << solution;
+	cout << "Final Solution: " << solution;
 	cout << "\n";
 }

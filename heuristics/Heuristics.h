@@ -3,6 +3,7 @@
 #include <math.h> 
 #include <cstdlib>
 #include <iostream>
+#include <random>
 
 void applyCVPipeline(double* bestValue, double* result);
 double getCost(double* state);
