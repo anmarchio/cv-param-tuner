@@ -28,7 +28,7 @@ double getCost(double* state)
 	// for your solution.
 	double result = 0.0;
 	applyCVPipeline(state, &result);
-	return result;
+	return 1.0 - result;
 }
 
 double getNeighbors(double state)
@@ -38,7 +38,7 @@ double getNeighbors(double state)
 	// for your solution.
 	
 	double fMin = 0.0;
-	double fMax = 1.0;
+	double fMax = 4.0;
 	double f = (double)rand() / RAND_MAX;
 	double delta = fMin + f * (fMax - fMin);
 	//double delta = rand() % 4 * 1.0;
@@ -50,6 +50,8 @@ double getNeighbors(double state)
 	{
 		state -= delta;
 	}
+	if (state < 0.0) state = 0.0;
+	if (state > 255.0) state = 255;
 	return state;
 }
 

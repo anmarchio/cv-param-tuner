@@ -9,9 +9,9 @@ Mat Pipeline::Run(Mat src, double mainThreshold = 128.0, double gradientThreshol
 
 	// Show image
 	string window_name = "Filter Pipeline";
-	/*namedWindow(window_name, 0);
-	resizeWindow(window_name, cv::Size(src.cols, src.rows));
-	imshow(window_name, src);*/
+	//namedWindow(window_name, 0);
+	//resizeWindow(window_name, cv::Size(src.cols, src.rows));
+	//imshow(window_name, src);
 
 	// Check if image is loaded correctly
 	if (src.empty())
@@ -29,7 +29,7 @@ Mat Pipeline::Run(Mat src, double mainThreshold = 128.0, double gradientThreshol
 	Mat dst;
 	//threshold(gray, dst, 200.0, 255.0, 0);
 	threshold(gray, dst, mainThreshold, 255.0, 0);
-	imshow(window_name, dst);
+	//imshow(window_name, dst);
 		
 	//Sobel edge filters
 	
@@ -114,19 +114,20 @@ void Pipeline::confusionMatrix(Mat m1, Mat m2, int* TP, int* TN, int* FP, int* F
 		for (int c = 0; c < m2.cols; c++)
 		{
 			Vec3b zero = Vec3b(0, 0, 0);
-			Vec3b one = Vec3b(255, 255, 255);
+			// cout << "M1 at " << r << ", " << c << m1.at<Vec3b>(r, c) << "\n";
+
 			// TP: m1 and m2 == 1
-			if (m1.at<Vec3b>(r, c) == one && m2.at<Vec3b>(r, c) == one)
-				*TP++;
+			if (m1.at<Vec3b>(r, c) != zero && m2.at<Vec3b>(r, c) != zero)
+				*TP = *TP + 1;
 			// TN: m1 and m2 == 0
 			if (m1.at<Vec3b>(r, c) == zero && m2.at<Vec3b>(r, c) == zero)
-				*TN++;
+				*TN = *TN + 1;
 			// FP: m1 == 0 while m2 == 1
-			if (m1.at<Vec3b>(r, c) == zero && m2.at<Vec3b>(r, c) == one)
-				*FP++;
+			if (m1.at<Vec3b>(r, c) == zero && m2.at<Vec3b>(r, c) != zero)
+				*FP = *FP + 1;
 			// FN: m1 == 1 and m2 == 0
-			if (m1.at<Vec3b>(r, c) == one && m2.at<Vec3b>(r, c) == zero)
-				*FN++;
+			if (m1.at<Vec3b>(r, c) != zero && m2.at<Vec3b>(r, c) == zero)
+				*FN = *FN + 1;
 		}
 	}
 }
