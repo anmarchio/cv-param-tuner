@@ -38,7 +38,7 @@ double getNeighbors(double state)
 	// for your solution.
 	
 	double fMin = 0.0;
-	double fMax = 10.0;
+	double fMax = 2.0;
 	double f = (double)rand() / RAND_MAX;
 	double delta = fMin + f * (fMax - fMin);
 	//double delta = rand() % 4 * 1.0;
@@ -77,7 +77,7 @@ void simulatedAnnealing(
 	double currentTemp = initialTemp;
 
 	// Current Initial State
-	double currentState = (double) (rand() % 200);
+	double currentState = (double) (rand() % 200 + 50);
 	double init = 0.0;
 	solution = &init;
 	*solution = getCost(&currentState);
