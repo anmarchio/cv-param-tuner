@@ -3,7 +3,25 @@
 
 Pipeline::Pipeline() {}
 
-Mat Pipeline::Run(Mat src, double mainThreshold = 128.0, double gradientThreshold = 15.0, double minArea = 3000.0) {
+Mat Pipeline::RunThreshold(Mat src, double mainThreshold = 128.0, double gradientThreshold = 15.0, double minArea = 3000.0) {
+	// Check if image is loaded correctly
+	if (src.empty())
+	{
+		cout << "Error opening image.";
+		return Mat();
+	}
+
+	GaussianBlur(src, src, Size(3, 3), 0.0);
+	
+	// Binary Inverted
+	Mat dst;
+	//threshold(gray, dst, 200.0, 255.0, 0);
+	threshold(src, dst, mainThreshold, 255.0, 1);
+	
+	return dst;
+}
+
+Mat Pipeline::RunEdgeThreshold(Mat src, double mainThreshold = 128.0, double gradientThreshold = 15.0, double minArea = 3000.0) {
 	// Read image
 	//Mat src = imread(imgPath, IMREAD_COLOR);
 
@@ -114,7 +132,6 @@ void Pipeline::confusionMatrix(Mat m1, Mat m2, int* TP, int* TN, int* FP, int* F
 		for (int c = 0; c < m2.cols; c++)
 		{
 			Vec3b zero = Vec3b(0, 0, 0);
-			// cout << "M1 at " << r << ", " << c << m1.at<Vec3b>(r, c) << "\n";
 
 			// TP: m1 and m2 == 1
 			if (m1.at<Vec3b>(r, c) != zero && m2.at<Vec3b>(r, c) != zero)

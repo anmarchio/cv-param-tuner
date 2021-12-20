@@ -18,7 +18,8 @@ class Pipeline
 {
 public:
 	Pipeline();
-	static Mat Run(Mat src, double mainThreshold, double gradientThreshold, double minArea);
+	static Mat RunThreshold(Mat src, double mainThreshold, double gradientThreshold, double minArea);
+	static Mat RunEdgeThreshold(Mat src, double mainThreshold, double gradientThreshold, double minArea);
 	static void confusionMatrix(Mat m1, Mat m2, int* TP, int* TN, int* FP, int* FN);
 	static double jaccardIndex(Mat m1, Mat m2);
 	static double jaccardDistance(double jaccardIndex);

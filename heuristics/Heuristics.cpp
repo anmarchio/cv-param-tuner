@@ -17,7 +17,7 @@ void applyCVPipeline(double* bestValue, double* result)
 {
 	// OpenCV filter function
 	//  
-	Mat prediction = Pipeline::Run(sourceImg, *bestValue, 15.0, 3000.0);
+	Mat prediction = Pipeline::RunThreshold(sourceImg, *bestValue, 15.0, 3000.0);
 	*result = Pipeline::jaccardIndex(groundTruthImg, prediction);
 }
 
@@ -38,7 +38,7 @@ double getNeighbors(double state)
 	// for your solution.
 	
 	double fMin = 0.0;
-	double fMax = 4.0;
+	double fMax = 10.0;
 	double f = (double)rand() / RAND_MAX;
 	double delta = fMin + f * (fMax - fMin);
 	//double delta = rand() % 4 * 1.0;
@@ -77,7 +77,7 @@ void simulatedAnnealing(
 	double currentTemp = initialTemp;
 
 	// Current Initial State
-	double currentState = (double) (rand() % 10);
+	double currentState = (double) (rand() % 200);
 	double init = 0.0;
 	solution = &init;
 	*solution = getCost(&currentState);
