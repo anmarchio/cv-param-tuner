@@ -1,14 +1,24 @@
 #include "pch.h"
 #include "Heuristics.h"
 
-void applyCVPipeline(double* bestValue, double* result)
+Mat sourceImg;
+Mat groundTruthImg;
+
+void computePolynomialFunction(double* bestValue, double* result)
 {
 	// Polynomial test function
 	//  
 	*result = 3 * pow(*bestValue, 2) +
 		*bestValue -
 		20;
-	//return result;
+}
+
+void applyCVPipeline(double* bestValue, double* result)
+{
+	// OpenCV filter function
+	//  
+	Mat prediction = Pipeline::Run(sourceImg, *bestValue, 15.0, 3000.0);
+	*result = Pipeline::jaccardIndex(groundTruthImg, prediction);
 }
 
 double getCost(double* state)
@@ -46,11 +56,15 @@ double getNeighbors(double state)
 int max = 100;
 
 void simulatedAnnealing(
-	int param1,
-	int param2,
-	int param3,
+	string sourceImgPath,
+	string groundTruthImgPath,
+	double param1,
+	double param2,
+	double param3,
 	double *solution)
 {
+	sourceImg = cv::imread(sourceImgPath);
+	groundTruthImg = cv::imread(groundTruthImgPath);
 	// Generate an initial point
 	//*best = rand() % 100;
 	//int bestEvaluation = applyCVPipeline(*best);
@@ -108,7 +122,6 @@ void simulatedAnnealing(
 		currentTemp -= alpha;
 
 		std::cout << "Temp: " << currentTemp << "\n";
-		std::cout << "Neighbor: " << neighbor << "\n";
 		std::cout << "Current State: " << currentState << "\n";
 		std::cout << "Current State Cost: " << currentStateCost << "\n";
 	}

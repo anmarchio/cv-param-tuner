@@ -9,9 +9,9 @@ Mat Pipeline::Run(Mat src, double mainThreshold = 128.0, double gradientThreshol
 
 	// Show image
 	string window_name = "Filter Pipeline";
-	namedWindow(window_name, 0);
+	/*namedWindow(window_name, 0);
 	resizeWindow(window_name, cv::Size(src.cols, src.rows));
-	imshow(window_name, src);
+	imshow(window_name, src);*/
 
 	// Check if image is loaded correctly
 	if (src.empty())
@@ -86,8 +86,8 @@ Mat Pipeline::Run(Mat src, double mainThreshold = 128.0, double gradientThreshol
 	//add(src, mask, result);
 	drawContours(src, savedContours, -1, Scalar(0, 0, 255), 3);
 
-	imshow(window_name, src);
-	waitKey(0);
+	//imshow(window_name, src);
+	//waitKey(0);
 
 	return mask;
 }
@@ -113,17 +113,19 @@ void Pipeline::confusionMatrix(Mat m1, Mat m2, int* TP, int* TN, int* FP, int* F
 	{
 		for (int c = 0; c < m2.cols; c++)
 		{
+			Vec3b zero = Vec3b(0, 0, 0);
+			Vec3b one = Vec3b(255, 255, 255);
 			// TP: m1 and m2 == 1
-			if (m1.at<double>(r, c) > 0 && m2.at<double>(r, c) > 0)
+			if (m1.at<Vec3b>(r, c) == one && m2.at<Vec3b>(r, c) == one)
 				*TP++;
 			// TN: m1 and m2 == 0
-			if (m1.at<double>(r, c) == 0 && m2.at<double>(r, c) == 0)
+			if (m1.at<Vec3b>(r, c) == zero && m2.at<Vec3b>(r, c) == zero)
 				*TN++;
 			// FP: m1 == 0 while m2 == 1
-			if (m1.at<double>(r, c) == 0 && m2.at<double>(r, c) > 0)
+			if (m1.at<Vec3b>(r, c) == zero && m2.at<Vec3b>(r, c) == one)
 				*FP++;
 			// FN: m1 == 1 and m2 == 0
-			if (m1.at<double>(r, c) > 0 && m2.at<double>(r, c) == 0)
+			if (m1.at<Vec3b>(r, c) == one && m2.at<Vec3b>(r, c) == zero)
 				*FN++;
 		}
 	}
@@ -138,13 +140,19 @@ double Pipeline::jaccardIndex(Mat m1, Mat m2)
 		m1 defines the groundtruth,
 		m2 defines the prediction
 	*/
-	int* TP = 0;
-	int* TN = 0;
-	int* FP = 0;
-	int* FN = 0;
-	confusionMatrix(m1, m2, TP, TN, FP, FN);
+	int TP = 0;
+	int TN = 0;
+	int FP = 0;
+	int FN = 0;
+
+	int* TPptr = &TP;
+	int* TNptr = &TN;
+	int* FPptr = &FP;
+	int* FNptr = &FN;
+
+	confusionMatrix(m1, m2, TPptr, TNptr, FPptr, FNptr);
 	// Calculate the Jaccard index
-	double jaccardInd = *TP * 1.0 / (*TP + *FP + *FN) * 1.0;
+	double jaccardInd = *TPptr * 1.0 / (*TPptr + *FPptr + *FNptr) * 1.0;
 	return jaccardInd;
 }
 

@@ -18,10 +18,10 @@
     <ClInclude Include="pch.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Main.h">
+    <ClInclude Include="Heuristics.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Heuristics.h">
+    <ClInclude Include="Pipeline.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -33,6 +33,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Heuristics.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

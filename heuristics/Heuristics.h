@@ -5,11 +5,15 @@
 #include <iostream>
 #include <random>
 
+#include "Pipeline.h"
+
 void applyCVPipeline(double* bestValue, double* result);
 double getCost(double* state);
 double getNeighbors(double state);
 void simulatedAnnealing(
-	int param1,
-	int param2,
-	int param3,
+	string sourceImg,
+	string groundTruthImg,
+	double param1,
+	double param2,
+	double param3,
 	double *solution);
