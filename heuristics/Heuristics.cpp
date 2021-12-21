@@ -31,6 +31,65 @@ double getCost(double* state)
 	return 1.0 - result;
 }
 
+void initStateCostHist(double stateCostHist[], int size)
+{
+	stateCostHist[size];
+	for (int i = 0; i < size; i++)
+	{
+		if(i % 2 == 0)
+			stateCostHist[i] = 1.0;
+		else
+			stateCostHist[i] = 0.0;
+	}
+}
+
+double getMaximumChange(
+	double stateCostHist[],
+	int stateCostHistSize,
+	double currentStateCost)
+{
+	double maxDelta = 0.0;
+	for(int i = 0; i < stateCostHistSize; i++)
+	{
+		if (i < stateCostHistSize - 1)
+			stateCostHist[i] = stateCostHist[i + 1];
+		else
+			stateCostHist[i] = currentStateCost;
+		
+		if(i > 0)
+		{
+			double delta = abs(stateCostHist[i] - stateCostHist[i - 1]);
+			if (delta > maxDelta)
+				maxDelta = delta;
+		}
+	}	
+	return maxDelta;
+}
+
+void printStateHeader()
+{
+	std::cout << "Temp |";
+	std::cout << "Neighbor |";
+	std::cout << "Current State |";
+	std::cout << "Current State Cost |";
+	std::cout << "Maximum Change |\n";
+}
+
+void printState(
+	double currentTemp,
+	double neighbor,
+	double currentState,
+	double currentStateCost,
+	double maximumChange)
+{
+	std::cout << currentTemp << " |";
+	std::cout << neighbor << " |";
+	std::cout << currentState << " |";
+	std::cout << currentStateCost << " |";
+	std::cout << maximumChange << " |\n";
+
+}
+
 double getNeighbors(double state)
 {
 	// Returns neighbors of 
@@ -54,8 +113,6 @@ double getNeighbors(double state)
 	if (state > 255.0) state = 255;
 	return state;
 }
-
-int max = 100;
 
 void simulatedAnnealing(
 	string sourceImgPath,
@@ -81,12 +138,25 @@ void simulatedAnnealing(
 	double init = 0.0;
 	solution = &init;
 	*solution = getCost(&currentState);
-
-
+	
 	std::default_random_engine generator;
 	std::uniform_real_distribution<double> rdist(0.0, 1.0);
 
-	while(currentTemp > finalTemp)
+	// Initialize termination criterion
+	// for minimal maximum change
+	// i. e. if change remains too little
+	// over e. g. 10 iterations
+	double stateCostHist[10];
+	initStateCostHist(stateCostHist, 10);
+	double minimalMaximumChange = 0.001;
+	double maximumChange = 1.0;
+
+	printStateHeader();
+	// While loop
+	// Terminates if
+	// - finalTemp is met
+	// - minimalMaximumChange is below 0.1 (or 10 %) over 10 generations
+	while(currentTemp > finalTemp && maximumChange > minimalMaximumChange)
 	{
 		// Get Neighbour of the current state
 		double neighbor = getNeighbors(currentState);		
@@ -98,10 +168,7 @@ void simulatedAnnealing(
 		// If solution is met, stop
 		if (currentStateCost >= -0.3 && currentStateCost <= 0.3)
 		{
-			std::cout << "Temp: " << currentTemp << "\n";
-			std::cout << "Neighbor: " << neighbor << "\n";
-			std::cout << "Current State: " << currentState << "\n";
-			std::cout << "Current State Cost: " << currentStateCost << "\n";
+			printState(currentTemp, neighbor, currentState, currentStateCost, maximumChange);
 			break;
 		}
 
@@ -122,9 +189,9 @@ void simulatedAnnealing(
 		}
 		// Decrement the temperature
 		currentTemp -= alpha;
+		
+		printState(currentTemp, neighbor, currentState, currentStateCost, maximumChange);
 
-		std::cout << "Temp: " << currentTemp << "\n";
-		std::cout << "Current State: " << currentState << "\n";
-		std::cout << "Current State Cost: " << currentStateCost << "\n";
+		maximumChange = getMaximumChange(stateCostHist, 10, currentStateCost);
 	}
 }
